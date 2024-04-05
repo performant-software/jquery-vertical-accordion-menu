@@ -59,9 +59,9 @@ $dcjqaccordion = new dc_jqaccordion();
 // Register the widget
 $register_accordion = function () {
 	return register_widget("dc_jqaccordion_widget");
-}
+};
 
-add_action('widgets_init', $register_accordion);
+add_action( 'widgets_init', $register_accordion );
 
 /**
 * Create a menu shortcode
