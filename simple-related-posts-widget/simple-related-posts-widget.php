@@ -14,11 +14,11 @@ function cutname($txt, $len) {
 
 class RelatedPosts extends WP_Widget {
 
-	function RelatedPosts() {
+	public function __construct() {
 		$widget_ops = array('classname' => 'RelatedPosts', 'description' => 'A simple wordpress plugin that displays articles from the same category.' );
 		$this->WP_Widget('RelatedPosts', 'Simple Related Posts', $widget_ops);
 	}
- 
+
 	function form($instance) {
 
 		$instance = wp_parse_args((array) $instance, array(
@@ -30,7 +30,7 @@ class RelatedPosts extends WP_Widget {
 		$title = $instance['title'];
 		$posts = $instance['posts'];
 		$dhc = $instance['dhc'];
-		
+
 		if (!$posts) $posts = "10";
 		if (!$dhc) $dhc = "25";
 
@@ -39,7 +39,7 @@ class RelatedPosts extends WP_Widget {
 	echo '<p><label for="'.$this->get_field_id('dhc').'">Number of characters in title: <input style="width: 50px;" id="'.$this->get_field_id('dhc').'" name="'.$this->get_field_name('dhc').'" type="text" value="'.attribute_escape($dhc).'" /></label></p>';
 
 	}
- 
+
 	function update($new_instance, $old_instance) {
 
 		$instance = $old_instance;
@@ -52,16 +52,16 @@ class RelatedPosts extends WP_Widget {
 
 	function widget($args, $instance) {
 	extract($args, EXTR_SKIP);
- 
+
 		if (is_single()) {
 			global $post, $wp_query;
 
 			echo $before_widget;
 			$title = empty($instance['title']) ? ' ' : apply_filters('widget_title', $instance['title']);
- 
+
 			if (!empty($title))
 				echo $before_title . $title . $after_title;;
- 
+
 			$id = $wp_query->post->ID;
 			$cats = get_the_category($id);
 
@@ -88,21 +88,23 @@ class RelatedPosts extends WP_Widget {
 						$dh_query->the_post();
 						echo '<li><a href="'.get_permalink().'" title="'.get_the_title().'">'.cutname(get_the_title(), $instance["dhc"]).'</a></li>';
 					}
-					
+
 					echo '</ul>';
 				}
 
 			}
- 
+
 			echo $after_widget;
 		}
 	}
- 
+
 }
 
-$re
+$register_posts_widget = function () {
+	return register_widget("RelatedPosts");
+};
 
 // TODO: replace `created_function` here if we end up using this plugin
-add_action('widgets_init', create_function('', 'return register_widget("RelatedPosts");'));
+add_action('widgets_init', $register_posts_widget);
 
 ?>
